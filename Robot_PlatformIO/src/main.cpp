@@ -5,7 +5,7 @@
 
 Robot robot;
 
-int reading;
+int readMode;
 
 void setup()
 {
@@ -18,15 +18,15 @@ void loop()
   Serial.println("1. Zmiana kąta dowolnej osi");
   Serial.println("2. Update serw");
   Serial.println("3. Zmiana prędkości");
-  reading = robot.serialRead();
-  switch (reading)
+  readMode = robot.serialRead();
+  switch (readMode)
   {
   case 1:
     Serial.print("Którą oś chcesz edytować? ");
-    reading = robot.serialRead();
+    readMode = robot.serialRead();
     Serial.print("Poprzednia wartość osi: ");
-    Serial.println(robot.iAxis[reading - 1].getJointAngle());
-    robot.iAxis[reading - 1].readJointAngleFromTerminal(reading);
+    Serial.println(robot.iAxis[readMode - 1].getJointAngle());
+    robot.iAxis[readMode - 1].readJointAngleFromTerminal(readMode);
     break;
   case 2:
     robot.update();
