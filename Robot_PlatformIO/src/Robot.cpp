@@ -1,7 +1,16 @@
 #include "Robot.h"
 #include "Config.h"
+#include <math.h>
 Robot::Robot()
 {
+    prevAngle[0] = 90;
+    prevAngle[1] = 90;
+    prevAngle[2] = 90;
+    prevAngle[3] = 90;
+    prevAngle[4] = 90;
+    prevAngle[5] = 90;
+    prevAngle[6] = 90;
+    iSpeed = 10;
 }
 
 Robot::~Robot()
@@ -29,9 +38,24 @@ void Robot::update()
 {
     for (int i = 0; i < 7; i++)
     {
-        iAxis[i].write(reMap(i));
+        jointAngle[i] = reMap(i);
+    }
+    while ((round(smoothedAngle[1]) != jointAngle[1]) || (round(smoothedAngle[2]) != jointAngle[2]) || (round(smoothedAngle[3]) != jointAngle[3]) || (round(smoothedAngle[4]) != jointAngle[4]) || (round(smoothedAngle[5]) != jointAngle[5]) || (round(smoothedAngle[6]) != jointAngle[6]))
+    {
+        for (int i = 0; i < 7; i++)
+        {
+            smoothedAngle[i] = ((jointAngle[i] * RobotAcceleration) + (prevAngle[i] * (1 - RobotAcceleration)));
+            prevAngle[i] = smoothedAngle[i];
+            iAxis[i].write(smoothedAngle[i]);
+            delay(iSpeed);
+        }
     }
 }
+
+// void Robot::update(int axisNumber, int jointAngle)
+// {
+//     iAxis[axisNumber].write(jointAngle);
+// }
 
 int Robot::serialRead()
 {
@@ -81,4 +105,9 @@ int Robot::reMap(int axisNumber)
         return iAxis[axisNumber].getJointAngle();
         break;
     }
+}
+
+void Robot::setSpeed(int aSpeed) // ustawia prędkość robota wartość w zakresie od 1 do 100
+{
+    iSpeed = map(aSpeed, 1, 100, 100, 1);
 }

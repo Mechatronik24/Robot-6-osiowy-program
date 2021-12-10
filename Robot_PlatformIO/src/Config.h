@@ -26,3 +26,5 @@
 
 #define servo7Min 90
 #define servo7Max 90
+
+#define RobotAcceleration 0.05
