@@ -23,15 +23,23 @@ void Robot::startupRobot()
     {
         iAxis[i].attach(i + 4); // Attach serw od 1 do 7 na pinach od 4 do 10
     }
+    update();
 }
 
 void Robot::calculateXYZ()
 {
-    // na podstawie tych iAxis1.iJoin... kalkulujemy x,y,z i podmieniamy tutaj
+    double iAlfa = iAxis[1].getJointAngle() * PI / 180;
+    double iBeta = (iAxis[2].getJointAngle() - 90 + iAxis[1].getJointAngle()) * PI / 180;
+    // double iGamma = ((iAxis[4].getJointAngle() - 180 + iAxis[2].getJointAngle() + iAxis[1].getJointAngle()) * PI / 180);
+    double iGamma = ((iAxis[4].getJointAngle() - 90) * PI / 180) + iBeta;
 
-    iX = 0;
-    iY = 0;
-    iZ = 1;
+    iX = shoulder1 * cos(iAlfa) + shoulder2 * cos(iBeta) + shoulder3 * cos(iGamma);
+    iY = shoulder1 * sin(iAlfa) + shoulder2 * sin(iBeta) + shoulder3 * sin(iGamma);
+    // iZ = 1;
+    Serial.print("Współrzędna X: ");
+    Serial.println(iX);
+    Serial.print("Współrzędna Y: ");
+    Serial.println(iY);
 }
 
 void Robot::update()

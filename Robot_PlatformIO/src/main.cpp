@@ -18,6 +18,7 @@ void loop()
   Serial.println("1. Zmiana kąta dowolnej osi");
   Serial.println("2. Update serw");
   Serial.println("3. Zmiana prędkości");
+  Serial.println("4. Oblicz położenie");
   readMode = robot.serialRead();
   switch (readMode)
   {
@@ -33,6 +34,9 @@ void loop()
     break;
   case 3:
     robot.setSpeed(robot.serialRead());
+    break;
+  case 4:
+    robot.calculateXYZ();
     break;
   default:
     Serial.println("Zły wybór!");

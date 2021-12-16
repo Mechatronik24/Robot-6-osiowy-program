@@ -7,11 +7,11 @@ class Robot
     double prevAngle[7];
     int reMap(int axisNumber);
     int iSpeed;
+    double iX;
+    double iY;
+    double iZ;
 
 public:
-    float iX;
-    float iY;
-    float iZ;
     Robot();
     ~Robot();
     void startupRobot();
