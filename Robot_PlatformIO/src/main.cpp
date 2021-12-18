@@ -16,14 +16,14 @@ void setup()
 void loop()
 {
   Serial.println("1. New joint angle");
-  Serial.println("2. Update servoes");
+  Serial.println("2. Update servos");
   Serial.println("3. Change speed");
   Serial.println("4. Calculate XYZ");
   readMode = robot.serialRead();
   switch (readMode)
   {
   case 1:
-    Serial.print("Which joint do you want to change? ");
+    Serial.print("Which joint angle do you want to change? ");
     readMode = robot.serialRead();
     Serial.print("Previous joint angle: ");
     Serial.println(robot.iAxis[readMode - 1].getJointAngle());

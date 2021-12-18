@@ -28,17 +28,28 @@ void Robot::startupRobot()
 
 void Robot::calculateXYZ()
 {
-    double iAlfa = iAxis[1].getJointAngle() * PI / 180;
-    double iBeta = (iAxis[2].getJointAngle() - 90 + iAxis[1].getJointAngle()) * PI / 180;
-    double iGamma = ((iAxis[4].getJointAngle() - 90) * PI / 180) + iBeta;
+    // double iAlfa = iAxis[1].getJointAngle() * PI / 180;
+    // double iBeta = (iAxis[2].getJointAngle() - 90 + iAxis[1].getJointAngle()) * PI / 180;
+    // double iGamma = ((iAxis[4].getJointAngle() - 90) * PI / 180) + iBeta;
 
-    iX = shoulder1 * cos(iAlfa) + shoulder2 * cos(iBeta) + shoulder3 * cos(iGamma);
-    iY = shoulder1 * sin(iAlfa) + shoulder2 * sin(iBeta) + shoulder3 * sin(iGamma);
-    // iZ = 1;
+    // iX = shoulder1 * cos(iAlfa) + shoulder2 * cos(iBeta) + shoulder3 * cos(iGamma);
+    // iY = shoulder1 * sin(iAlfa) + shoulder2 * sin(iBeta) + shoulder3 * sin(iGamma);
+
+    double iAlfa = iAxis[0].getJointAngle() * PI / 180;                                    // Servo 1 degrees to radians
+    double iBeta = iAxis[1].getJointAngle() * PI / 180;                                    // Servo 2 degrees to radians
+    double iGamma = (iAxis[2].getJointAngle() - 90 + iAxis[1].getJointAngle()) * PI / 180; // Servo 3 degrees with offset to radians
+    // double iDelta = iAxis[3].getJointAngle() * PI / 180;                                   // Servo 4 degrees to radians
+    // double iEpsilon = ((iAxis[4].getJointAngle() - 90) * PI / 180) + iGamma;               // Servo 5 degrees with offset to radians
+
+    iX = shoulder1 * cos(iAlfa) * cos(iBeta) + shoulder2 * cos(iAlfa) * cos(iGamma);
+    iY = -(shoulder1 * sin(iAlfa) * cos(iBeta) + shoulder2 * sin(iAlfa) * cos(iGamma));
+    iZ = shoulder1 * sin(iBeta) + shoulder2 * sin(iGamma);
     Serial.print("X: ");
     Serial.println(iX);
     Serial.print("Y: ");
     Serial.println(iY);
+    Serial.print("Z: ");
+    Serial.println(iZ);
 }
 
 void Robot::update()
@@ -75,7 +86,7 @@ int Robot::reMap(int axisNumber)
     switch (axisNumber)
     {
     case 0:
-        mappedAngle = map(iAxis[0].getJointAngle(), 0, 270, servo1Min, servo1Max);
+        mappedAngle = map(iAxis[0].getJointAngle(), -45, 225, servo1Min, servo1Max);
         return mappedAngle;
         break;
     case 1:
@@ -87,7 +98,7 @@ int Robot::reMap(int axisNumber)
         return mappedAngle;
         break;
     case 3:
-        mappedAngle = map(iAxis[3].getJointAngle(), 0, 270, servo4Min, servo4Max);
+        mappedAngle = map(iAxis[3].getJointAngle(), -45, 225, servo4Min, servo4Max);
         return mappedAngle;
         break;
     case 4:
@@ -96,7 +107,7 @@ int Robot::reMap(int axisNumber)
         break;
 
     case 5:
-        mappedAngle = map(iAxis[5].getJointAngle(), 0, 270, servo6Min, servo6Max);
+        mappedAngle = map(iAxis[5].getJointAngle(), -45, 225, servo6Min, servo6Max);
         return mappedAngle;
         break;
     case 6:
