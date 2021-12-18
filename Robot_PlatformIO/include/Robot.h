@@ -12,14 +12,12 @@ class Robot
     double iZ;
 
 public:
-    Robot();
-    ~Robot();
-    void startupRobot();
-    RobotJoint iAxis[7];
-    void calculateXYZ();
-    void update();
-    // void update(int i, int jointAngle);
-    int serialRead();
-    void smoothMovement();
-    void setSpeed(int aSpeed);
+    Robot();                   // Constructor
+    ~Robot();                  // Destructor
+    void startupRobot();       // Attach servo 1 do 7 and write constructor's values
+    RobotJoint iAxis[7];       // Create 7 iAxis objects
+    void calculateXYZ();       // Calculate XYZ coordinates
+    void update();             // Robot goes to new joint angles (joint move)
+    int serialRead();          // Read digit data from terminal
+    void setSpeed(int aSpeed); // Set robot speed from 1 to 100
 };

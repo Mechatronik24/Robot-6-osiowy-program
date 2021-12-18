@@ -15,17 +15,17 @@ void setup()
 
 void loop()
 {
-  Serial.println("1. Zmiana kąta dowolnej osi");
-  Serial.println("2. Update serw");
-  Serial.println("3. Zmiana prędkości");
-  Serial.println("4. Oblicz położenie");
+  Serial.println("1. New joint angle");
+  Serial.println("2. Update servoes");
+  Serial.println("3. Change speed");
+  Serial.println("4. Calculate XYZ");
   readMode = robot.serialRead();
   switch (readMode)
   {
   case 1:
-    Serial.print("Którą oś chcesz edytować? ");
+    Serial.print("Which joint do you want to change? ");
     readMode = robot.serialRead();
-    Serial.print("Poprzednia wartość osi: ");
+    Serial.print("Previous joint angle: ");
     Serial.println(robot.iAxis[readMode - 1].getJointAngle());
     robot.iAxis[readMode - 1].readJointAngleFromTerminal(readMode);
     break;
@@ -39,7 +39,7 @@ void loop()
     robot.calculateXYZ();
     break;
   default:
-    Serial.println("Zły wybór!");
+    Serial.println("Error!");
     break;
   }
 }

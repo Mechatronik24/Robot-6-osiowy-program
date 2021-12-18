@@ -30,15 +30,14 @@ void Robot::calculateXYZ()
 {
     double iAlfa = iAxis[1].getJointAngle() * PI / 180;
     double iBeta = (iAxis[2].getJointAngle() - 90 + iAxis[1].getJointAngle()) * PI / 180;
-    // double iGamma = ((iAxis[4].getJointAngle() - 180 + iAxis[2].getJointAngle() + iAxis[1].getJointAngle()) * PI / 180);
     double iGamma = ((iAxis[4].getJointAngle() - 90) * PI / 180) + iBeta;
 
     iX = shoulder1 * cos(iAlfa) + shoulder2 * cos(iBeta) + shoulder3 * cos(iGamma);
     iY = shoulder1 * sin(iAlfa) + shoulder2 * sin(iBeta) + shoulder3 * sin(iGamma);
     // iZ = 1;
-    Serial.print("Współrzędna X: ");
+    Serial.print("X: ");
     Serial.println(iX);
-    Serial.print("Współrzędna Y: ");
+    Serial.print("Y: ");
     Serial.println(iY);
 }
 
@@ -59,11 +58,6 @@ void Robot::update()
         }
     }
 }
-
-// void Robot::update(int axisNumber, int jointAngle)
-// {
-//     iAxis[axisNumber].write(jointAngle);
-// }
 
 int Robot::serialRead()
 {

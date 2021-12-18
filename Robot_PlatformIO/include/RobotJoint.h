@@ -7,9 +7,9 @@ class RobotJoint : public Servo
   int iJointAngle;
 
 public:
-  RobotJoint();
-  ~RobotJoint();
-  void setJointAngle(int aJointAngle);
-  int getJointAngle();
-  void readJointAngleFromTerminal(int a);
+  RobotJoint();                           // Constructor
+  ~RobotJoint();                          // Destructor
+  void setJointAngle(int aJointAngle);    // Set new joint angle
+  int getJointAngle();                    // Get joint angle from class RobotJoint
+  void readJointAngleFromTerminal(int a); // Read joint angle
 };
