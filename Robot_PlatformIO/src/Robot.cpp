@@ -38,12 +38,13 @@ void Robot::calculateXYZ()
     double iAlfa = iAxis[0].getJointAngle() * PI / 180;                                    // Servo 1 degrees to radians
     double iBeta = iAxis[1].getJointAngle() * PI / 180;                                    // Servo 2 degrees to radians
     double iGamma = (iAxis[2].getJointAngle() - 90 + iAxis[1].getJointAngle()) * PI / 180; // Servo 3 degrees with offset to radians
-    // double iDelta = iAxis[3].getJointAngle() * PI / 180;                                   // Servo 4 degrees to radians
-    // double iEpsilon = ((iAxis[4].getJointAngle() - 90) * PI / 180) + iGamma;               // Servo 5 degrees with offset to radians
+    // double iDelta = (2 * (iAxis[1].getJointAngle() - 90) + iAxis[1].getJointAngle() - 90) * PI / 180; // X axis rotation of shoulder1 and 2
+    // double iEpsilon = ((iAxis[3].getJointAngle() - 90) * PI / 180)+iAlfa; // Z axis rotation of shoulder1 and 2
+    double iZeta = ((iAxis[4].getJointAngle() - 90) * PI / 180) + iGamma; // Servo 5 degrees to radians
 
-    iX = shoulder1 * cos(iAlfa) * cos(iBeta) + shoulder2 * cos(iAlfa) * cos(iGamma);
-    iY = -(shoulder1 * sin(iAlfa) * cos(iBeta) + shoulder2 * sin(iAlfa) * cos(iGamma));
-    iZ = shoulder1 * sin(iBeta) + shoulder2 * sin(iGamma);
+    iX = -(shoulder1 * cos(iAlfa) * cos(iBeta) + shoulder2 * cos(iAlfa) * cos(iGamma) + shoulder3 * cos(iAlfa) * cos(iZeta)); // XYZ without servo 4 rotation
+    iY = -(shoulder1 * sin(iAlfa) * cos(iBeta) + shoulder2 * sin(iAlfa) * cos(iGamma) + shoulder3 * sin(iAlfa) * cos(iZeta));
+    iZ = shoulder1 * sin(iBeta) + shoulder2 * sin(iGamma) + shoulder3 * sin(iZeta);
     Serial.print("X: ");
     Serial.println(iX);
     Serial.print("Y: ");
@@ -111,7 +112,7 @@ int Robot::reMap(int axisNumber)
         return mappedAngle;
         break;
     case 6:
-        mappedAngle = map(iAxis[6].getJointAngle(), 0, 180, servo7Min, servo7Max);
+        mappedAngle = map(iAxis[6].getJointAngle(), 0, 90, servo7Min, servo7Max);
         return mappedAngle;
         break;
     default:
