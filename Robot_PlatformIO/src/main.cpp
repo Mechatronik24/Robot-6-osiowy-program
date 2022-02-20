@@ -7,8 +7,8 @@
 SoftwareSerial bluetooth(12, 11);
 Robot robot;
 
-int readMode;
-
+int readMode, updateState=0;
+unsigned long t3=0, t4;
 void setup()
 {
   Serial.begin(9600);
@@ -16,64 +16,75 @@ void setup()
   robot.startupRobot();
 }
 
-String BluetoothData, data1;
+String BluetoothData, data1,coordinatesTEXT,buffor;
 long data2;
 
 void loop()
 {
   while (bluetooth.available())
   {
+    t4= millis();
+      if (t4 - t3 >= 5)
+      {t3=millis();
     char z = bluetooth.read();
     BluetoothData += z;
+      }
+
+  }
+  if (BluetoothData.length() > 1)
+  { 
+    updateState=1;
     Serial.println(BluetoothData);
+    data1 = BluetoothData.substring(0, 6);
+    BluetoothData.remove(0, 6);
+    data2 = BluetoothData.toInt();
+    BluetoothData.remove(0, BluetoothData.indexOf("S"));
+
+    if (data1 == "ServoA")
+    {
+      robot.iAxis[0].setJointAngle(data2);
+    }
+    else if (data1 == "ServoB")
+    {
+      robot.iAxis[1].setJointAngle(data2);
+    }
+    else if (data1 == "ServoC")
+    {
+      robot.iAxis[2].setJointAngle(data2);
+    }
+    else if (data1 == "ServoD")
+    {
+      robot.iAxis[3].setJointAngle(data2);
+    }
+    else if (data1 == "ServoE")
+    {
+      robot.iAxis[4].setJointAngle(data2);
+    }
+    else if (data1 == "ServoF")
+    {
+      robot.iAxis[5].setJointAngle(data2);
+    }
+    else if (data1 == "ServoG")
+    {
+      robot.iAxis[6].setJointAngle(data2);
+    }
   }
-  data1 = BluetoothData.substring(0, 6);
-  BluetoothData.remove(0, 6);
-  data2 = BluetoothData.toInt();
-  BluetoothData.remove(0, BluetoothData.indexOf("S"));
-  if (data1 == "ServoA")
+  else
   {
-    robot.iAxis[0].setJointAngle(data2);
-    // Serial.println(data1);
-    // Serial.println(data2);
+    if(updateState==1)
+    {
+    robot.updateAll();
+    Serial.println("Update");
+    buffor=robot.iX;
+    coordinatesTEXT="|"+buffor+"|";
+    buffor=robot.iY;
+    coordinatesTEXT=coordinatesTEXT+buffor+"|";
+    buffor=robot.iZ;
+    coordinatesTEXT=coordinatesTEXT+buffor+"|";
+    bluetooth.print(coordinatesTEXT);
+    updateState=0;
+    }
   }
-  else if (data1 == "ServoB")
-  {
-    robot.iAxis[1].setJointAngle(data2);
-    // Serial.println(data1);
-    // Serial.println(data2);
-  }
-  else if (data1 == "ServoC")
-  {
-    robot.iAxis[2].setJointAngle(data2);
-    // Serial.println(data1);
-    // Serial.println(data2);
-  }
-  else if (data1 == "ServoD")
-  {
-    robot.iAxis[3].setJointAngle(data2);
-    // Serial.println(data1);
-    // Serial.println(data2);
-  }
-  else if (data1 == "ServoE")
-  {
-    robot.iAxis[4].setJointAngle(data2);
-    // Serial.println(data1);
-    // Serial.println(data2);
-  }
-  else if (data1 == "ServoF")
-  {
-    robot.iAxis[5].setJointAngle(data2);
-    // Serial.println(data1);
-    // Serial.println(data2);
-  }
-  else if (data1 == "ServoG")
-  {
-    robot.iAxis[6].setJointAngle(data2);
-    // Serial.println(data1);
-    // Serial.println(data2);
-  }
-  robot.update();
 }
 
 // void loop()
@@ -93,7 +104,7 @@ void loop()
 //     robot.iAxis[readMode - 1].readJointAngleFromTerminal(readMode);
 //     break;
 //   case 2:
-//     robot.update();
+//     robot.updateAll();
 //     break;
 //   case 3:
 //     robot.setSpeed(robot.serialRead());

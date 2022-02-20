@@ -1,6 +1,10 @@
 #include "Robot.h"
 #include "Config.h"
 #include <math.h>
+
+unsigned long t1[7] = {0, 0, 0, 0, 0, 0, 0};
+unsigned long t2[7];
+
 Robot::Robot()
 {
     prevAngle[0] = 90;
@@ -10,7 +14,7 @@ Robot::Robot()
     prevAngle[4] = 90;
     prevAngle[5] = 90;
     prevAngle[6] = 90;
-    iSpeed = 10;
+    iSpeed = 30;
 }
 
 Robot::~Robot()
@@ -23,7 +27,7 @@ void Robot::startupRobot()
     {
         iAxis[i].attach(i + 4); // Attach serw od 1 do 7 na pinach od 4 do 10
     }
-    update();
+    updateAll();
 }
 
 void Robot::calculateXYZ()
@@ -53,21 +57,55 @@ void Robot::calculateXYZ()
     Serial.println(iZ);
 }
 
-void Robot::update()
+void Robot::updateAll()
 {
+    Serial.println("Jestem w updateAll");
     for (int i = 0; i < 7; i++)
     {
         jointAngle[i] = reMap(i);
     }
+    Serial.println("Jestem przed while");
     while ((round(smoothedAngle[1]) != jointAngle[1]) || (round(smoothedAngle[2]) != jointAngle[2]) || (round(smoothedAngle[3]) != jointAngle[3]) || (round(smoothedAngle[4]) != jointAngle[4]) || (round(smoothedAngle[5]) != jointAngle[5]) || (round(smoothedAngle[6]) != jointAngle[6]))
     {
+        Serial.println("Jestem w while");
         for (int i = 0; i < 7; i++)
         {
-            smoothedAngle[i] = ((jointAngle[i] * RobotAcceleration) + (prevAngle[i] * (1 - RobotAcceleration)));
-            prevAngle[i] = smoothedAngle[i];
-            iAxis[i].write(smoothedAngle[i]);
+            t2[i] = millis();
+            if ((t2[i] - t1[i] >= iSpeed)&&(abs(jointAngle[i] - prevAngle[i]) > 3))
+            {
+                t1[i] = millis();
+                smoothedAngle[i] = ((jointAngle[i] * RobotAcceleration) + (prevAngle[i] * (1 - RobotAcceleration))); // 1 - RobotAcceleration
+                prevAngle[i] = smoothedAngle[i];
+                iAxis[i].write(smoothedAngle[i]);
+            }
+            else if(abs(jointAngle[i] - prevAngle[i]) <= 3)
+            {
+                smoothedAngle[i] = jointAngle[i];
+                iAxis[i].write(smoothedAngle[i]);
+            }
+        }
+    }
+    calculateXYZ();
+}
+void Robot::update(int servoNumber)
+{
+    jointAngle[servoNumber] = reMap(servoNumber);
+    while (round(smoothedAngle[servoNumber]) != jointAngle[servoNumber])
+    {
+        if (abs(jointAngle[servoNumber] - prevAngle[servoNumber]) > 3)
+        {
+            smoothedAngle[servoNumber] = ((jointAngle[servoNumber] * RobotAcceleration) + (prevAngle[servoNumber] * (1 - RobotAcceleration))); // 1 - RobotAcceleration
+            prevAngle[servoNumber] = smoothedAngle[servoNumber];
             delay(iSpeed);
         }
+        else
+        {
+            smoothedAngle[servoNumber] = jointAngle[servoNumber];
+        }
+        iAxis[servoNumber].write(smoothedAngle[servoNumber]);
+        Serial.print(servoNumber);
+        Serial.print(" ");
+        Serial.println(smoothedAngle[servoNumber]);
     }
 }
 
@@ -123,5 +161,5 @@ int Robot::reMap(int axisNumber)
 
 void Robot::setSpeed(int aSpeed) // ustawia prędkość robota wartość w zakresie od 1 do 100
 {
-    iSpeed = map(aSpeed, 1, 100, 100, 1);
+    iSpeed = map(aSpeed, 10, 100, 100, 10);
 }
