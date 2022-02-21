@@ -34,6 +34,7 @@ public:
     void update(int servoNumber);
     int serialRead();          // Read digit data from terminal
     void setSpeed(int aSpeed); // Set robot speed from 1 to 100
+    int getSpeed();
     void home();
     void openGripper();
     void closeGripper();

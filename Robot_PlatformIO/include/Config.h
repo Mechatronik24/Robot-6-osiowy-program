@@ -7,8 +7,8 @@
 #define shoulder2 130
 #define shoulder3 200
 
-#define servo1Min 0         
-#define servo1Max 188   //215
+#define servo1Min 0
+#define servo1Max 188 // 215
 
 #define servo2Min 35
 #define servo2Max 145

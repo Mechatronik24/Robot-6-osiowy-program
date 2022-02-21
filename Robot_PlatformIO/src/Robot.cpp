@@ -158,6 +158,11 @@ void Robot::setSpeed(int aSpeed) // ustawia prędkość robota wartość w zakre
     iSpeed = map(aSpeed, 10, 100, 100, 10);
 }
 
+int Robot::getSpeed()
+{
+    return iSpeed;
+}
+
 void Robot::home()
 {
     for (int i = 0; i < 7; i++)

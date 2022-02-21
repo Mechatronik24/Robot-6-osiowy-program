@@ -14,6 +14,55 @@ String BluetoothData, data1, coordinatesTEXT, buffor;
 long data2;
 char data3;
 
+void sendCoordinates();
+
+void autoRobot();
+
+void bluetoothRead();
+
+void analizeBluetoothData();
+
+void setup()
+{
+  Serial.begin(9600);
+  bluetooth.begin(9600);
+  robot.startupRobot();
+  superTask.startTasks();
+  superTask.addThread(bluetoothRead);
+  superTask.addThread(analizeBluetoothData);
+}
+
+void loop()
+{
+  Serial.println("1. New joint angle");
+  Serial.println("2. Update servos");
+  Serial.println("3. Change speed");
+  Serial.println("4. Calculate XYZ");
+  readMode = robot.serialRead();
+  switch (readMode)
+  {
+  case 1:
+    Serial.print("Which joint angle do you want to change? ");
+    readMode = robot.serialRead();
+    Serial.print("Previous joint angle: ");
+    Serial.println(robot.iAxis[readMode - 1].getJointAngle());
+    robot.iAxis[readMode - 1].readJointAngleFromTerminal(readMode);
+    break;
+  case 2:
+    robot.updateAll();
+    break;
+  case 3:
+    robot.setSpeed(robot.serialRead());
+    break;
+  case 4:
+    robot.calculateXYZ();
+    break;
+  default:
+    Serial.println("Error!");
+    break;
+  }
+}
+
 void sendCoordinates()
 {
   buffor = robot.iX;
@@ -40,16 +89,7 @@ void autoRobot()
   }
 }
 
-void setup()
-{
-  Serial.begin(9600);
-  bluetooth.begin(9600);
-  robot.startupRobot();
-  superTask.startTasks();
-  // superTask.addThread(bluetoothRead);
-}
-
-void loop()
+void bluetoothRead()
 {
   while (bluetooth.available())
   {
@@ -61,6 +101,10 @@ void loop()
       BluetoothData += z;
     }
   }
+}
+
+void analizeBluetoothData()
+{
   if (BluetoothData.length() > 1)
   {
     // Serial.println(BluetoothData);
@@ -179,7 +223,7 @@ void loop()
     }
     else if (data1 == "Swork")
     {
-      superTask.setTimer(autoRobot, 3000, 10);
+      superTask.setTimer(autoRobot, robot.getSpeed() * 100, 10);
     }
     else
     {
@@ -196,5 +240,5 @@ void loop()
     }
   }
   data1 = "";
-  data3 = "";
+  data3 = '0';
 }

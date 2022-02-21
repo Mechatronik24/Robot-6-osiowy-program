@@ -33,7 +33,4 @@ void RobotJoint::readJointAngleFromTerminal(int a)
     iJointAngle = Serial.parseInt();
     int cleanup = Serial.parseInt();
     Serial.println(iJointAngle);
-
-    // jointAngle[a-1]=Serial.parseInt();
-    // Serial.println( jointAngle[a-1]);
 }
