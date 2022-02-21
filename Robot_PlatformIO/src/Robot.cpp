@@ -2,9 +2,6 @@
 #include "Config.h"
 #include <math.h>
 
-unsigned long t1[7] = {0, 0, 0, 0, 0, 0, 0};
-unsigned long t2[7];
-
 Robot::Robot()
 {
     prevAngle[0] = 90;
@@ -56,7 +53,6 @@ void Robot::calculateXYZ()
     Serial.print("Z: ");
     Serial.println(iZ);
 }
-
 void Robot::updateAll()
 {
     Serial.println("Jestem w updateAll");
@@ -71,14 +67,14 @@ void Robot::updateAll()
         for (int i = 0; i < 7; i++)
         {
             t2[i] = millis();
-            if ((t2[i] - t1[i] >= iSpeed)&&(abs(jointAngle[i] - prevAngle[i]) > 3))
+            if ((t2[i] - t1[i] >= iSpeed) && (abs(jointAngle[i] - prevAngle[i]) > 3))
             {
                 t1[i] = millis();
                 smoothedAngle[i] = ((jointAngle[i] * RobotAcceleration) + (prevAngle[i] * (1 - RobotAcceleration))); // 1 - RobotAcceleration
                 prevAngle[i] = smoothedAngle[i];
                 iAxis[i].write(smoothedAngle[i]);
             }
-            else if(abs(jointAngle[i] - prevAngle[i]) <= 3)
+            else if (abs(jointAngle[i] - prevAngle[i]) <= 3)
             {
                 smoothedAngle[i] = jointAngle[i];
                 iAxis[i].write(smoothedAngle[i]);
@@ -102,10 +98,8 @@ void Robot::update(int servoNumber)
         {
             smoothedAngle[servoNumber] = jointAngle[servoNumber];
         }
+        // Serial.println(smoothedAngle[servoNumber]);
         iAxis[servoNumber].write(smoothedAngle[servoNumber]);
-        Serial.print(servoNumber);
-        Serial.print(" ");
-        Serial.println(smoothedAngle[servoNumber]);
     }
 }
 
@@ -162,4 +156,35 @@ int Robot::reMap(int axisNumber)
 void Robot::setSpeed(int aSpeed) // ustawia prędkość robota wartość w zakresie od 1 do 100
 {
     iSpeed = map(aSpeed, 10, 100, 100, 10);
+}
+
+void Robot::home()
+{
+    for (int i = 0; i < 7; i++)
+    {
+        iAxis[i].setJointAngle(homeAngles[i]);
+    }
+    updateAll();
+}
+
+void Robot::openGripper()
+{
+    iAxis[6].setJointAngle(0);
+    update(6);
+}
+
+void Robot::closeGripper()
+{
+    iAxis[6].setJointAngle(90);
+    update(6);
+}
+
+void Robot::setAutoModeAngles(int aX, int aY, int aValue)
+{
+    autoModeAngles[aX][aY] = aValue;
+}
+
+int Robot::getAutoModeAngles(int aX, int aY)
+{
+    return autoModeAngles[aX][aY];
 }
