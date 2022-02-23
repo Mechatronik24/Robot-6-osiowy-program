@@ -8,7 +8,8 @@
 SoftwareSerial bluetooth(12, 11);
 Robot robot;
 
-int readMode, updateState = 0, data4[7], pointer = 0;
+int readMode, data4[7], pointer = 0;
+boolean updateState = 0, receivingState = 0;
 unsigned long t3 = 0, t4;
 String BluetoothData, data1, coordinatesTEXT, buffor;
 long data2;
@@ -93,6 +94,7 @@ void bluetoothRead()
 {
   while (bluetooth.available())
   {
+    receivingState = 1;
     t4 = millis();
     if (t4 - t3 >= 5)
     {
@@ -101,11 +103,12 @@ void bluetoothRead()
       BluetoothData += z;
     }
   }
+  receivingState = 0;
 }
 
 void analizeBluetoothData()
 {
-  if (BluetoothData.length() > 1)
+  if ((BluetoothData.length() > 1) && (receivingState == 0))
   {
     // Serial.println(BluetoothData);
     data1 = BluetoothData.substring(0, 5);
@@ -217,13 +220,36 @@ void analizeBluetoothData()
           robot.setAutoModeAngles(6, i, data4[i]);
         }
         break;
+      case 'H':
+        for (int i = 0; i < 7; i++)
+        {
+          robot.setAutoModeAngles(7, i, data4[i]);
+        }
+        break;
+      case 'I':
+        for (int i = 0; i < 7; i++)
+        {
+          robot.setAutoModeAngles(8, i, data4[i]);
+        }
+        break;
+      case 'J':
+        for (int i = 0; i < 7; i++)
+        {
+          robot.setAutoModeAngles(9, i, data4[i]);
+        }
+        break;
       default:
         break;
       }
     }
     else if (data1 == "Swork")
     {
-      superTask.setTimer(autoRobot, robot.getSpeed() * 100, 10);
+      pointer = 0;
+      superTask.setTimer(autoRobot, robot.getSpeed() * 100, 0);
+    }
+    else if (data1 == "Shalt")
+    {
+      superTask.killTimer(autoRobot);
     }
     else
     {
