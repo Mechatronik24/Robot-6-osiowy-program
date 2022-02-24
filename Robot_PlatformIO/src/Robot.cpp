@@ -55,15 +55,12 @@ void Robot::calculateXYZ()
 }
 void Robot::updateAll()
 {
-    Serial.println("Jestem w updateAll");
     for (int i = 0; i < 7; i++)
     {
         jointAngle[i] = reMap(i);
     }
-    Serial.println("Jestem przed while");
     while ((round(smoothedAngle[1]) != jointAngle[1]) || (round(smoothedAngle[2]) != jointAngle[2]) || (round(smoothedAngle[3]) != jointAngle[3]) || (round(smoothedAngle[4]) != jointAngle[4]) || (round(smoothedAngle[5]) != jointAngle[5]) || (round(smoothedAngle[6]) != jointAngle[6]))
     {
-        Serial.println("Jestem w while");
         for (int i = 0; i < 7; i++)
         {
             t2[i] = millis();

@@ -13,8 +13,8 @@
 #define servo2Min 35
 #define servo2Max 145
 
-#define servo3Min 35
-#define servo3Max 156
+#define servo3Min 32
+#define servo3Max 150
 
 #define servo4Min 5
 #define servo4Max 185
