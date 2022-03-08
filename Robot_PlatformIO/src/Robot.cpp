@@ -29,13 +29,6 @@ void Robot::startupRobot()
 
 void Robot::calculateXYZ()
 {
-    // double iAlfa = iAxis[1].getJointAngle() * PI / 180;
-    // double iBeta = (iAxis[2].getJointAngle() - 90 + iAxis[1].getJointAngle()) * PI / 180;
-    // double iGamma = ((iAxis[4].getJointAngle() - 90) * PI / 180) + iBeta;
-
-    // iX = shoulder1 * cos(iAlfa) + shoulder2 * cos(iBeta) + shoulder3 * cos(iGamma);
-    // iY = shoulder1 * sin(iAlfa) + shoulder2 * sin(iBeta) + shoulder3 * sin(iGamma);
-
     double iAlfa = iAxis[0].getJointAngle() * PI / 180;                                    // Servo 1 degrees to radians
     double iBeta = iAxis[1].getJointAngle() * PI / 180;                                    // Servo 2 degrees to radians
     double iGamma = (iAxis[2].getJointAngle() - 90 + iAxis[1].getJointAngle()) * PI / 180; // Servo 3 degrees with offset to radians

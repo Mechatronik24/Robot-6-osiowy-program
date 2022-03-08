@@ -23,7 +23,7 @@ void bluetoothRead();
 
 void analizeBluetoothData();
 
-//void terminal();
+// void terminal();
 
 void setup()
 {
@@ -32,13 +32,12 @@ void setup()
   robot.startupRobot();
   superTask.addThread(bluetoothRead);
   superTask.addThread(analizeBluetoothData);
-  //superTask.addThread(terminal);
+  // superTask.addThread(terminal);
   superTask.startTasks();
 }
 
 void loop()
 {
-
 }
 
 // void terminal()
@@ -75,7 +74,7 @@ void loop()
 void sendCoordinates()
 {
   buffor = robot.iX;
-  coordinatesTEXT =buffor + "|";
+  coordinatesTEXT = buffor + "|";
   buffor = robot.iY;
   coordinatesTEXT = coordinatesTEXT + buffor + "|";
   buffor = robot.iZ;
